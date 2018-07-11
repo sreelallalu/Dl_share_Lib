@@ -280,7 +280,7 @@ public abstract class NanoHTTPD {
             return myServerSocket == null ? -1 : WifiUtils.inetAddressToInt(myServerSocket.getInetAddress());
         } catch (Exception e) {
             e.printStackTrace();
-            //Log.e(TAG, "exception in getIpAddress: " + e.getMessage());
+            Log.e(TAG, "exception in getIpAddress: " + e.getMessage());
             return -1;
         }
     }
@@ -290,7 +290,7 @@ public abstract class NanoHTTPD {
             return myServerSocket == null ? null : myServerSocket.getInetAddress().getHostAddress();
         } catch (Exception e) {
             e.printStackTrace();
-            //Log.e(TAG, "exception in getHostAddress: " + e.getMessage());
+            Log.e(TAG, "exception in getHostAddress: " + e.getMessage());
             return null;
         }
     }
@@ -652,7 +652,7 @@ public abstract class NanoHTTPD {
             this.status = status;
             this.mimeType = mimeType;
             try {
-                //Log.e("text_sending",txt);
+                Log.e("text_sending",txt);
 
                 this.data = txt != null ? new ByteArrayInputStream(txt.getBytes("UTF-8")) : null;
             } catch (UnsupportedEncodingException uee) {

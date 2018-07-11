@@ -236,7 +236,7 @@ public class WifiUtils {
 
         }
 
-     /*   //Log.e("SSID",ssid);
+     /*   Log.e("SSID",ssid);
         //Log.d(TAG, "is this ssid mathcing to ST hotspot: " + ssid);
         String[] splits = ssid.split("-");
         if (splits.length != 2)
@@ -356,7 +356,7 @@ public class WifiUtils {
             }
             return null;
         } catch (final Exception e) {
-            //Log.e("WifiUtils", "exception in fetching inet address: " + e.getMessage());
+            Log.e("WifiUtils", "exception in fetching inet address: " + e.getMessage());
             return null;
         }
     }
@@ -398,7 +398,7 @@ public class WifiUtils {
                 }
             }
         } catch (IOException e) {
-            //Log.e(TAG, "exception in retrieving device name: " + e.getMessage());
+            Log.e(TAG, "exception in retrieving device name: " + e.getMessage());
         }
 
         Log.w(TAG, "None found - falling back to the default device name: " + HotspotControl.DEFAULT_DEVICE_NAME);

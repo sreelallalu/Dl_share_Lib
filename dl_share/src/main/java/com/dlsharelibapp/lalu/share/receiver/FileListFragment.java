@@ -34,6 +34,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -161,7 +162,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
         data.putString("ssid", ssid);
         data.putString("name", senderName);
         data.putString("port", port);
-        //Log.e("Bundle", data.toString());
+        Log.e("Bundle", data.toString());
         fragment.setArguments(data);
         return fragment;
     }
@@ -174,7 +175,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
             mSenderSSID = getArguments().getString("ssid");
             mPort = getArguments().getString("port");
             mSenderName = getArguments().getString("name");
-            //Log.e(TAG, "sender ip: " + mSenderIp + " " + mSenderName + " " + mPort);
+            Log.e(TAG, "sender ip: " + mSenderIp + " " + mSenderName + " " + mPort);
         }
     }
 
@@ -228,7 +229,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
 
     private void loadListing(String contentAsString) {
 
-        //Log.e("files_list",contentAsString==null?"nullfile":contentAsString);
+        Log.e("files_list",contentAsString==null?"nullfile":contentAsString);
         Type collectionType = new TypeToken<List<FileListingModel>>() {
         }.getType();
         List<FileListingModel> files = new Gson().fromJson(contentAsString, collectionType);
@@ -368,7 +369,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
 
             this.file = file;
             this.filetype = filetype;
-            //Log.e("fileextemsion",filetype);
+            Log.e("fileextemsion",filetype);
 
         }
 
@@ -500,7 +501,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
                 error = true;
-                //Log.e(TAG, "Exception: " + e.getMessage());
+                Log.e(TAG, "Exception: " + e.getMessage());
                 return null;
             }
         }
@@ -525,7 +526,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
                     } else if (null != getView())
                         loadListing(result);
 
-                    else //Log.e(TAG, "fragment may have been removed, File fetch");
+                    else Log.e(TAG, "fragment may have been removed, File fetch");
                     break;
                 case CHECK_SENDER_STATUS:
                     if (error) {
@@ -538,7 +539,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
                             ((ReceiverActivity) getActivity()).resetSenderSearch();
                             Toast.makeText(getActivity(), getString(R.string.p2p_receiver_error_sender_disconnected), Toast.LENGTH_SHORT).show();
                         } else{
-                            //Log.e(TAG, "Activity is not instance of ReceiverActivity");
+                            Log.e(TAG, "Activity is not instance of ReceiverActivity");
                         }
 
                     } else if (null != getView()) {
@@ -546,7 +547,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
                         uiUpdateHandler.removeMessages(CHECK_SENDER_STATUS);
                         uiUpdateHandler.sendMessageDelayed(uiUpdateHandler.obtainMessage(CHECK_SENDER_STATUS), 1000);
                     } else
-                        //Log.e(TAG, "fragment may have been removed: Sender api check");
+                        Log.e(TAG, "fragment may have been removed: Sender api check");
                     break;
             }
 
@@ -576,10 +577,10 @@ public class FileListFragment extends android.support.v4.app.Fragment {
                 // Convert the InputStream into a string
                 return readIt(is);
             } catch (SocketTimeoutException e) {
-                //Log.e("timeout", e.getMessage());
+                Log.e("timeout", e.getMessage());
                 return "";
             } catch (SocketException e) {
-                //Log.e("socket ex", e.getMessage());
+                Log.e("socket ex", e.getMessage());
                 return "";
 
             } finally {
@@ -733,7 +734,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
                          if(sizefile_list.size()>0&&sizefile_list.get(i)!=null)
                          {
                              model.setFilesize(sizefile_list.get(i));
-                             //Log.e("data","data_"+sizefile_list.get(i));
+                             Log.e("data","data_"+sizefile_list.get(i));
                          }
 
                     }

@@ -129,7 +129,7 @@ class ShareServer extends NanoHTTPD {
      * @return {@link Response}
      */
     private Response createErrorResponse(Response.Status status, String message) {
-        //Log.e(TAG, "error while creating response: " + message);
+        Log.e(TAG, "error while creating response: " + message);
         return new Response(status, MIME_PLAINTEXT, message);
     }
 
@@ -187,7 +187,7 @@ class ShareServer extends NanoHTTPD {
      */
     private Response createFileResponse(String fileUrl, String clientIp) throws IOException {
         final File file = new File(fileUrl);
-        //Log.e(TAG, "resolve info found, file location: " + file.getAbsolutePath() + ", file length: " + file.length() + ", file name: " + file.getName());
+        Log.e(TAG, "resolve info found, file location: " + file.getAbsolutePath() + ", file length: " + file.length() + ", file name: " + file.getName());
         Response res = new Response(Response.Status.OK, MIME_FORCE_DOWNLOAD, clientIp, file, m_clientsFileTransferListener);
         res.addHeader("Content-Length", "" + file.length());
         res.addHeader("Content-Disposition", "attachment; filename='" + file.getName() + "'");
@@ -204,7 +204,7 @@ class ShareServer extends NanoHTTPD {
                 answer += line;
             }
         } catch (IOException ioe) {
-            //Log.e("NanoHTTPD", ioe.toString());
+            Log.e("NanoHTTPD", ioe.toString());
         }
         return new Response(answer);
     }

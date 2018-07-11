@@ -295,11 +295,11 @@ public class ShareActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_WRITE_SETTINGS) {
-                //Log.e("succ", "call succ");
+                Log.e("succ", "call succ");
                 switchHotspotEnable(true);
 
             } else {
-                //Log.e("succ", "call backfail");
+                Log.e("succ", "call backfail");
             }
         }
 
@@ -318,10 +318,10 @@ public class ShareActivity extends AppCompatActivity {
         if (Utils.isShareServiceRunning(getApplicationContext())) {
             if (!sender_switch.isChecked()) {
                 changeApControlCheckedStatus(true);
-                //Log.e("resume", "resume1");
+                Log.e("resume", "resume1");
 
             }
-            //Log.e("resume", "resume2");
+            Log.e("resume", "resume2");
 
             refreshApData();
 
@@ -329,12 +329,12 @@ public class ShareActivity extends AppCompatActivity {
         } else if (sender_switch.isChecked()) {
             changeApControlCheckedStatus(false);
             resetSenderUi(false);
-            //Log.e("resume", "resume3");
+            Log.e("resume", "resume3");
 
         }
         //switch on sender mode if not already
         else if (shouldAutoConnect) {
-            //Log.e("resume", "checking");
+            Log.e("resume", "checking");
             sender_switch.setChecked(true);
         }
     }
@@ -673,7 +673,7 @@ public class ShareActivity extends AppCompatActivity {
             }
             holder.update(fileName, updatetext, progress);
         } else {
-            //Log.e(TAG, "no list item found with this IP******");
+            Log.e(TAG, "no list item found with this IP******");
         }
     }
 
@@ -681,7 +681,7 @@ public class ShareActivity extends AppCompatActivity {
     private void addReceiverListItem(HotspotControl.WifiScanResult wifiScanResult) {
         List<HotspotControl.WifiScanResult> wifiScanResults = m_receiversListAdapter.getObjects();
         if (null != wifiScanResults && wifiScanResults.indexOf(wifiScanResult) != -1) {
-            //Log.e(TAG, "duplicate client, try updating connection status");
+            Log.e(TAG, "duplicate client, try updating connection status");
             View taskListItem = recycler_view.findViewWithTag(wifiScanResult.ip);
 
             ReceiversListItemHolder holder = new ReceiversListItemHolder(taskListItem);
@@ -736,7 +736,7 @@ public class ShareActivity extends AppCompatActivity {
         void resetTransferInfo(String fileName) {
             View v = itemView.findViewWithTag(fileName);
             if (null == v) {
-                //Log.e(TAG, "resetTransferInfo - no view found with file name tag!!");
+                Log.e(TAG, "resetTransferInfo - no view found with file name tag!!");
                 return;
             }
             ((TextView) v).setText("");
@@ -745,7 +745,7 @@ public class ShareActivity extends AppCompatActivity {
         void update(String fileName, String transferData, int progress) {
             View v = itemView.findViewWithTag(fileName);
             if (null == v) {
-                //Log.e(TAG, "update - no view found with file name tag!!");
+                Log.e(TAG, "update - no view found with file name tag!!");
                 return;
             }
             if (v.getVisibility() == View.GONE)

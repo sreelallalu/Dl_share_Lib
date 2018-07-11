@@ -3,12 +3,12 @@ package com.dlsharelibapp.lalu.share.utils;
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -92,9 +92,13 @@ public class HotspotControl {
 
     private static Object invokeSilently(Method method, Object receiver, Object... args) {
         try {
+
+
             return method.invoke(receiver, args);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            //Log.e(TAG, "exception in invoking methods: " + e.getMessage());
+
+
+        } catch (Exception e) {
+            Log.e(TAG, "exception in invoking methods: " + e.getMessage());
         }
         return null;
     }
@@ -115,6 +119,7 @@ public class HotspotControl {
     }
 
     private boolean setHotspotEnabled(WifiConfiguration config, boolean enabled) {
+
         Object result = invokeSilently(setWifiApEnabled, wm, config, enabled);
         if (result == null) {
             return false;
@@ -137,16 +142,41 @@ public class HotspotControl {
         m_shareServerListeningPort = port;
 
         m_original_config_backup = getConfiguration();
-
+        WifiConfiguration config = null;
         //Create new Open Wifi Configuration
-        WifiConfiguration wifiConf = new WifiConfiguration();
-        wifiConf.SSID = name;
-        wifiConf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-        wm.addNetwork(wifiConf);
+        if (Build.VERSION.SDK_INT < 24) {
+
+            config = new WifiConfiguration();
+            config.SSID = name;
+            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        } else {
+            config = new WifiConfiguration();
+            config.SSID = Contants.HOTSPOT_NAME;
+            config.BSSID = "";
+            config.hiddenSSID = true;
+            //the config, we do not do this.
+            config.preSharedKey = "testwpa2key";
+            config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+            //config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+            config.status = WifiConfiguration.Status.ENABLED;
+            config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+            config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+            config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+            config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+            config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+            config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+        }
+
+
+        wm.addNetwork(config);
 
         //save it
         wm.saveConfiguration();
-        return setHotspotEnabled(wifiConf, true);
+
+        //Log.e("hotspot enabled", "" + setHotspotEnabled(config, true));
+        //   return setHotspotEnabled(config, true);
+        return true;
     }
 
     /**
@@ -204,7 +234,7 @@ public class HotspotControl {
                 }
             }
         } catch (IOException e) {
-            //Log.e(TAG, "exception in fetching inet address: " + e.getMessage());
+            Log.e(TAG, "exception in fetching inet address: " + e.getMessage());
         }
         return null;
     }
@@ -241,7 +271,7 @@ public class HotspotControl {
             es.submit(new Runnable() {
                 public void run() {
                     try {
-                        //Log.e("handle recall_hotspot","method recall_hotspot");
+                        Log.e("handle recall_hotspot", "method recall_hotspot");
 
                         InetAddress ip = InetAddress.getByName(c.ip);
                         if (ip.isReachable(timeout)) {
@@ -251,9 +281,9 @@ public class HotspotControl {
                             Thread.sleep(1000);
                         } else listener.onClientConnectionDead(c);
                     } catch (IOException e) {
-                        //Log.e(TAG, "io exception while trying to reach client, ip: " + (c.ip));
+                        Log.e(TAG, "io exception while trying to reach client, ip: " + (c.ip));
                     } catch (InterruptedException ire) {
-                        //Log.e(TAG, "InterruptedException: " + ire.getMessage());
+                        Log.e(TAG, "InterruptedException: " + ire.getMessage());
                     }
                     latch.countDown();
                 }
@@ -265,7 +295,7 @@ public class HotspotControl {
 
                     latch.await();
                 } catch (InterruptedException e) {
-                    //Log.e(TAG, "listing clients countdown interrupted", e);
+                    Log.e(TAG, "listing clients countdown interrupted", e);
                 }
                 listener.onWifiClientsScanComplete();
             }
@@ -300,7 +330,6 @@ public class HotspotControl {
                 result.add(new WifiScanResult(ipAddr));
 
 
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -310,7 +339,7 @@ public class HotspotControl {
                     br.close();
                 }
             } catch (IOException e) {
-               e.printStackTrace();
+                e.printStackTrace();
             }
         }
 

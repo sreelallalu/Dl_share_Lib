@@ -229,9 +229,9 @@ public class ShareService extends Service {
                     hotspotCheckHandler.sendEmptyMessage(AP_START_CHECK);
                 } catch (BindException e) {
                     e.printStackTrace();
-                    //Log.e(TAG, "exception in starting file server: " + e.getMessage());
+                    Log.e(TAG, "exception in starting file server: " + e.getMessage());
                 } catch (Exception e) {
-                    //Log.e(TAG, "exception in starting file server: " + e.getMessage());
+                    Log.e(TAG, "exception in starting file server: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -257,7 +257,7 @@ public class ShareService extends Service {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            //Log.e(TAG, "exception in stopping file server: " + e.getMessage());
+            Log.e(TAG, "exception in stopping file server: " + e.getMessage());
         }
     }
 
@@ -320,7 +320,7 @@ public class ShareService extends Service {
                 return;
             if (msg.what == AP_ALIVE_CHECK) {
                 if (null == senderService.hotspotControl || !senderService.hotspotControl.isEnabled()) {
-                    //Log.e(TAG, "hotspot isnt active, close this service");
+                    Log.e(TAG, "hotspot isnt active, close this service");
                     senderService.disableHotspotAndStop();
                 } else sendEmptyMessageDelayed(AP_ALIVE_CHECK, 3000);
             } else if (msg.what == AP_START_CHECK && null != senderService.hotspotControl) {

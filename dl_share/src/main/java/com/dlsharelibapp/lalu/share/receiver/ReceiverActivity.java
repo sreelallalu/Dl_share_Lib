@@ -220,7 +220,7 @@ public class ReceiverActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         boolean isConnectedToShareThemAp = WifiUtils.isWifiConnectedToSTAccessPoint(getApplicationContext());
-       //Log.e("bool",isConnectedToShareThemAp+"");
+       Log.e("bool",isConnectedToShareThemAp+"");
 
         if (isConnectedToShareThemAp) {
             unRegisterForScanResults();
@@ -353,7 +353,7 @@ public class ReceiverActivity extends AppCompatActivity {
             if (null != mWifiScanReceiver)
                 unregisterReceiver(mWifiScanReceiver);
         } catch (Exception e) {
-            //Log.e(TAG, "exception while un-registering wifi changes.." + e.getMessage());
+            Log.e(TAG, "exception while un-registering wifi changes.." + e.getMessage());
         }
     }
 
@@ -362,7 +362,7 @@ public class ReceiverActivity extends AppCompatActivity {
             if (null != mNwChangesReceiver)
                 unregisterReceiver(mNwChangesReceiver);
         } catch (Exception e) {
-            //Log.e(TAG, "exception while un-registering NW changes.." + e.getMessage());
+            Log.e(TAG, "exception while un-registering NW changes.." + e.getMessage());
         }
     }
 
@@ -379,7 +379,7 @@ public class ReceiverActivity extends AppCompatActivity {
     private boolean checkLocationAccess() {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            //Log.e(TAG, "GPS not enabled..");
+            Log.e(TAG, "GPS not enabled..");
             buildAlertMessageNoGps();
             return false;
         }
@@ -417,13 +417,13 @@ public class ReceiverActivity extends AppCompatActivity {
         unRegisterForScanResults();
         boolean resetWifiScan;
         if (info.getSSID().equals(ssid)) {
-            //Log.e(TAG, "Already connected to ShareThem, add sender Files listing fragment");
+            Log.e(TAG, "Already connected to ShareThem, add sender Files listing fragment");
             resetWifiScan = false;
             addSenderFilesListingFragment(WifiUtils.getAccessPointIpAddress(getApplicationContext()), ssid);
         } else {
             m_p2p_connection_status.setText(getString(R.string.p2p_receiver_connecting_hint, ssid));
             resetWifiScan = !connectToOpenHotspot(wifiManager, ssid, false);
-            //Log.e(TAG, "connection attempt to ShareThem wifi is " + (!resetWifiScan ? "success!!!" : "FAILED..!!!"));
+            Log.e(TAG, "connection attempt to ShareThem wifi is " + (!resetWifiScan ? "success!!!" : "FAILED..!!!"));
         }
         //if wap isnt successful, start wifi scan
         if (resetWifiScan) {
@@ -453,7 +453,7 @@ public class ReceiverActivity extends AppCompatActivity {
                         break;
                     }
                 if (!foundSTWifi) {
-                    //Log.e(TAG, "no ST wifi found, starting scan again!!");
+                    Log.e(TAG, "no ST wifi found, starting scan again!!");
                     startWifiScan();
                 }
             } else if (intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
@@ -492,16 +492,16 @@ public class ReceiverActivity extends AppCompatActivity {
     private void addSenderFilesListingFragment(String ip, String ssid) {
         String[] senderInfo = setConnectedUi(ssid);
         if (null == senderInfo) {
-            //Log.e(TAG, "Cant retrieve port and name info from SSID");
+            Log.e(TAG, "Cant retrieve port and name info from SSID");
             return;
         }
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG_SENDER_FILES_LISTING);
         if (null != fragment) {
             if (ip.equals(((FileListFragment) fragment).getSenderIp()) && ssid.equals(((FileListFragment) fragment).getSenderSSID())) {
-                //Log.e(TAG, "files fragment exists already!!");
+                Log.e(TAG, "files fragment exists already!!");
                 return;
             } else {
-                //Log.e(TAG, "fragment with diff tag is found, removing to add a fresh one..");
+                Log.e(TAG, "fragment with diff tag is found, removing to add a fresh one..");
                 removeSenderFilesListingFragmentIfExists();
             }
         }
@@ -520,7 +520,7 @@ public class ReceiverActivity extends AppCompatActivity {
         if (null == senderInfo || senderInfo.length != 2)
             return null;
         String ip = WifiUtils.getThisDeviceIp(getApplicationContext());
-        //Log.e("ip_address",ip);
+        Log.e("ip_address",ip);
         m_p2p_connection_status.setText(getString(R.string.p2p_receiver_connected_hint, ssid, ip));
         m_goto_wifi_settings.setVisibility(View.VISIBLE);
         if (!m_receiver_control.isChecked())
@@ -570,7 +570,7 @@ public class ReceiverActivity extends AppCompatActivity {
                         activity.wifiManager.startScan();
                     break;
                 case WAIT_FOR_CONNECT_ACTION_TIMEOUT:
-                    //Log.e(TAG, "cant connect to sender's hotspot by increasing priority, try the dirty way..");
+                    Log.e(TAG, "cant connect to sender's hotspot by increasing priority, try the dirty way..");
                     activity.m_areOtherNWsDisabled = connectToOpenHotspot(activity.wifiManager, (String) msg.obj, true);
                     Message m = obtainMessage(WAIT_FOR_RECONNECT_ACTION_TIMEOUT);
                     m.obj = msg.obj;
@@ -579,7 +579,7 @@ public class ReceiverActivity extends AppCompatActivity {
                 case WAIT_FOR_RECONNECT_ACTION_TIMEOUT:
                     if (WifiUtils.isWifiConnectedToSTAccessPoint(activity) || activity.isFinishing())
                         return;
-                    //Log.e(TAG, "Even the dirty hack couldn't do it, prompt user to chose it fromWIFI settings..");
+                    Log.e(TAG, "Even the dirty hack couldn't do it, prompt user to chose it fromWIFI settings..");
                     activity.disableReceiverMode();
                     activity.showOptionsDialogWithListners(activity.getString(R.string.p2p_receiver_connect_timeout_error, msg.obj), new DialogInterface.OnClickListener() {
                         @Override
