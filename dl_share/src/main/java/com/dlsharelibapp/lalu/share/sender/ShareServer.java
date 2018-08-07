@@ -48,7 +48,7 @@ class ShareServer extends NanoHTTPD {
     private static final String TAG = "ShareServer";
 
     private static final String MIME_JSON = "application/json";
-    private static final String MIME_FORCE_DOWNLOAD = "application/force-download";
+    private static final String MIME_FORCE_DOWNLOAD = "application/force-p_p_download";
     private static final String MIME_PNG = "image/png";
 
     private String[] m_filesTobeHosted;
@@ -211,7 +211,7 @@ class ShareServer extends NanoHTTPD {
 
     private Response createLogoResponse() {
         try {
-            Bitmap bitmap = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.download);
+            Bitmap bitmap = BitmapFactory.decodeResource(m_context.getResources(), R.drawable.p_p_download);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
             byte[] bitmapdata = bos.toByteArray();

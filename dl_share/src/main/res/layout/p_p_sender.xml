@@ -117,7 +117,7 @@
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ripple_img" />
+                android:src="@drawable/p_p_ripple_img" />
 
             <ImageView
                 android:id="@+id/foundDevice"
@@ -127,7 +127,7 @@
                 android:layout_marginBottom="32dp"
                 android:layout_marginRight="6dp"
                 android:layout_toLeftOf="@id/centerImage"
-                android:src="@drawable/ripple_img"
+                android:src="@drawable/p_p_ripple_img"
                 android:visibility="invisible" />
         </com.dlsharelibapp.lalu.share.ripple.RippleBackground>
 

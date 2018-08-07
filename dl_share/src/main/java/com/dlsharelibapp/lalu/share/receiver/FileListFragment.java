@@ -73,7 +73,7 @@ import java.util.concurrent.CountDownLatch;
 import static android.content.Context.DOWNLOAD_SERVICE;
 
 /**
- * Lists all files available to download by making network calls using {@link ContactSenderAPITask}
+ * Lists all files available to p_p_download by making network calls using {@link ContactSenderAPITask}
  * <p>
  * Functionalities include:
  * <ul>
@@ -147,7 +147,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
             mBuilder = new NotificationCompat.Builder(getActivity());
             mBuilder.setContentTitle("Picture Download")
                     .setContentText("Download in progress")
-                    .setSmallIcon(R.drawable.ripple_img)
+                    .setSmallIcon(R.drawable.p_p_ripple_img)
                     .setPriority(NotificationCompat.PRIORITY_LOW);
             mBuilder.setAutoCancel(true);
         } catch (Exception e) {
@@ -274,7 +274,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
         request.setDestinationInExternalFilesDir(getActivity(),
                 Environment.DIRECTORY_DOWNLOADS, fileName);
 
-        //Enqueue download and save into referenceId
+        //Enqueue p_p_download and save into referenceId
         return downloadManager.enqueue(request);
     }
 
@@ -319,11 +319,11 @@ public class FileListFragment extends android.support.v4.app.Fragment {
              }
 
             if (file.exists() &&  senderFile.getFilesize()== temp_filesize) {
-                holder.download.setImageDrawable(holder.download.getResources().getDrawable(R.drawable.ic_open_file));
+                holder.download.setImageDrawable(holder.download.getResources().getDrawable(R.drawable.p_p_ic_open_file));
                 holder.download.setOnClickListener(new FileExit(file, senderFile.getExtension()));
 
             } else {
-                holder.download.setImageDrawable(holder.download.getResources().getDrawable(R.drawable.download));
+                holder.download.setImageDrawable(holder.download.getResources().getDrawable(R.drawable.p_p_download));
                 Uri uri = Uri.parse(String.format(PATH_FILE_DOWNLOAD, mSenderIp, mPort, position));
                 holder.download.setOnClickListener(new DownLoadFile(uri, senderFile.getFilename(), position, holder));
             }

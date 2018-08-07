@@ -776,7 +776,7 @@ public class ShareActivity extends AppCompatActivity {
         public ReceiversListItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LinearLayout itemView = (LinearLayout) LayoutInflater.from(parent.getContext()).
                     inflate(R.layout.p_p_sender_one_item, parent, false);
-            //Add at least those many textviews of shared files list size so that if a receiver decides to download them all at once, list item can manage to show status of all file downloads
+            //Add at least those many textviews of shared files list size so that if a receiver decides to p_p_download them all at once, list item can manage to show status of all file downloads
             if (null != sharedFiles && sharedFiles.length > 0)
                 for (int i = 0; i < sharedFiles.length; i++) {
                     TextView statusView = (TextView) LayoutInflater.from(parent.getContext()).

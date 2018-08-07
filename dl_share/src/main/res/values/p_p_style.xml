@@ -47,7 +47,7 @@
 
 
     <style name="CustomProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/custom_progress_horizontal</item>
+        <item name="android:progressDrawable">@drawable/p_p_custom_progress_horizontal</item>
         <item name="android:minHeight">40dip</item>
         <item name="android:maxHeight">50dip</item>
     </style>

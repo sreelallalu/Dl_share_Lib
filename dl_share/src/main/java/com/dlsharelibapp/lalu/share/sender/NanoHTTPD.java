@@ -72,7 +72,7 @@ import java.util.TimeZone;
  * <li>File server supports partial content (streaming)</li>
  * <li>File server supports ETags</li>
  * <li>File server does the 301 redirection trick for directories without '/'</li>
- * <li>File server supports simple skipping for files (continue download)</li>
+ * <li>File server supports simple skipping for files (continue p_p_download)</li>
  * <li>File server serves also very long files without memory overhead</li>
  * <li>Contains a built-in list of most common mime types</li>
  * <li>All header names are converted lowercase so they don't vary between browsers/clients</li>
