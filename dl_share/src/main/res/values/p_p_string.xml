@@ -3,7 +3,7 @@
 
     <string name="receiver_title">Receive Files</string>
     <string name="send_title">Send Files</string>
-
+    <string name="app_name">Digital Literacy</string>
     <string name="sender_data_on_warning">It is highly recommend to close Mobile DATA, Receivers may be able to use mobile data.</string>
 
     <string name="p2p_sender_system_settings_permission_prompt">Allow app to read/write System settings. Necessary to create a Wifi Hotspot for Offline File Transfers</string>
