@@ -1,6 +1,7 @@
 package com.dlsharelibapp.lalu.share.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -9,6 +10,7 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -22,7 +24,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
-
 public class HotspotControl {
 
     private static final String TAG = "HotspotControl";
@@ -32,8 +33,7 @@ public class HotspotControl {
      */
     private WifiConfiguration m_original_config_backup;
 
-    /**
-     */
+
     private int m_shareServerListeningPort;
 
     private static Method getWifiApConfiguration;
@@ -92,12 +92,8 @@ public class HotspotControl {
 
     private static Object invokeSilently(Method method, Object receiver, Object... args) {
         try {
-
-
             return method.invoke(receiver, args);
-
-
-        } catch (Exception e) {
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             Log.e(TAG, "exception in invoking methods: " + e.getMessage());
         }
         return null;
@@ -119,7 +115,6 @@ public class HotspotControl {
     }
 
     private boolean setHotspotEnabled(WifiConfiguration config, boolean enabled) {
-
         Object result = invokeSilently(setWifiApEnabled, wm, config, enabled);
         if (result == null) {
             return false;
@@ -136,47 +131,86 @@ public class HotspotControl {
     }
 
 
-    public boolean enableShareThemHotspot(String name, int port) {
-        wm.setWifiEnabled(false);
+    public boolean enableShareThemHotspot(String name, int port, Context applicationContext) {
 
-        m_shareServerListeningPort = port;
+        if (Build.VERSION.SDK_INT > 24) {
+            m_shareServerListeningPort = port;
+            m_original_config_backup = getConfiguration();
+            return hotspotstart(applicationContext);
 
-        m_original_config_backup = getConfiguration();
-        WifiConfiguration config = null;
-        //Create new Open Wifi Configuration
-        if (Build.VERSION.SDK_INT < 24) {
+        } else
 
-            config = new WifiConfiguration();
-            config.SSID = name;
-            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-        } else {
-            config = new WifiConfiguration();
-            config.SSID = Contants.HOTSPOT_NAME;
-            config.BSSID = "";
-            config.hiddenSSID = true;
-            //the config, we do not do this.
-            config.preSharedKey = "testwpa2key";
-            config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-            //config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-            config.status = WifiConfiguration.Status.ENABLED;
-            config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-            config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-            config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-            config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-            config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-            config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+        {
+
+            wm.setWifiEnabled(false);
+
+            m_shareServerListeningPort = port;
+
+            m_original_config_backup = getConfiguration();
+
+            //Create new Open Wifi Configuration
+            WifiConfiguration wifiConf = new WifiConfiguration();
+            wifiConf.SSID = "\"" + name + "\"";
+            wifiConf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+            wm.addNetwork(wifiConf);
+
+            //save it
+            wm.saveConfiguration();
+
+
+            return setHotspotEnabled(wifiConf, true);
+
         }
+    }
 
+    public boolean hotspotstart(Context view) {
+        wm = (WifiManager) view.getSystemService(Context.WIFI_SERVICE);
+      /*  WifiConfiguration wifiConf = new WifiConfiguration();
+        wifiConf.SSID = Contants.HOTSPOT_NAME;*/
+        // wifiConf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+
+        WifiConfiguration config = new WifiConfiguration();
+        config.SSID = Contants.HOTSPOT_NAME;
+        config.BSSID = "";
+        config.hiddenSSID = false;
+        //the config, we do not do this.
+        config.preSharedKey = "testwpa2key";
+        config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        config.status = WifiConfiguration.Status.ENABLED;
+        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+        config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+        config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+        config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
 
         wm.addNetwork(config);
 
+
         //save it
         wm.saveConfiguration();
+        try {
+            setWifiApEnabled = wm.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
 
-        //Log.e("hotspot enabled", "" + setHotspotEnabled(config, true));
-        //   return setHotspotEnabled(config, true);
-        return true;
+
+        Intent tetherSettings = new Intent();
+        tetherSettings.setClassName("com.android.settings", "com.android.settings.TetherSettings");
+        view.startActivity(tetherSettings);
+
+        return setHotspotEnabled(config, true);
+
+        //
+        //
+        //
+        //
+        // setHotspotEnabled(config,true);
+
+
     }
 
     /**
@@ -243,7 +277,6 @@ public class HotspotControl {
         public String ip;
 
         public WifiScanResult(String ipAddr) {
-
             this.ip = ipAddr;
         }
 
@@ -271,13 +304,9 @@ public class HotspotControl {
             es.submit(new Runnable() {
                 public void run() {
                     try {
-                        Log.e("handle recall_hotspot", "method recall_hotspot");
-
                         InetAddress ip = InetAddress.getByName(c.ip);
                         if (ip.isReachable(timeout)) {
                             listener.onClientConnectionAlive(c);
-
-
                             Thread.sleep(1000);
                         } else listener.onClientConnectionDead(c);
                     } catch (IOException e) {
@@ -292,7 +321,6 @@ public class HotspotControl {
         new Thread() {
             public void run() {
                 try {
-
                     latch.await();
                 } catch (InterruptedException e) {
                     Log.e(TAG, "listing clients countdown interrupted", e);
@@ -305,7 +333,6 @@ public class HotspotControl {
 
     public List<WifiScanResult> getWifiClients() {
         if (!isEnabled()) {
-
             return null;
         }
         List<WifiScanResult> result = new ArrayList<>();
@@ -317,29 +344,23 @@ public class HotspotControl {
         try {
             br = new BufferedReader(new FileReader("/proc/net/arp"));
             String line;
-
-
             while ((line = br.readLine()) != null) {
-
                 String[] parts = line.split(" +");
-
                 if (parts.length < 4 || !macPattern.matcher(parts[3]).find()) {
                     continue;
                 }
                 String ipAddr = parts[0];
                 result.add(new WifiScanResult(ipAddr));
-
-
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            Log.e(TAG, "exception in getting clients", e);
         } finally {
             try {
                 if (br != null) {
                     br.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "", e);
             }
         }
 

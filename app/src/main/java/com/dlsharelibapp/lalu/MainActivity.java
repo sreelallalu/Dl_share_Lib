@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         //the config, we do not do this.
         config.preSharedKey = "testwpa2key";
         config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
-        //config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
         config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
         config.status = WifiConfiguration.Status.ENABLED;
         config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         tetherSettings.setClassName("com.android.settings", "com.android.settings.TetherSettings");
         startActivity(tetherSettings);
 
-
+        setHotspotEnabled(config,true);
 
       //
         //

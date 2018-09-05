@@ -62,13 +62,15 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 
@@ -378,6 +380,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
             try {
 
                 if (file.exists()) {
+                    Log.e("file_path",file+"");
                     Uri path;
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                         path = Uri.fromFile(file);
@@ -538,7 +541,7 @@ public class FileListFragment extends android.support.v4.app.Fragment {
                             senderStatusCheckRetryLimit = SENDER_DATA_FETCH_RETRY_LIMIT;
                             ((ReceiverActivity) getActivity()).resetSenderSearch();
                             Toast.makeText(getActivity(), getString(R.string.p2p_receiver_error_sender_disconnected), Toast.LENGTH_SHORT).show();
-                        } else{
+                        } else {
                             Log.e(TAG, "Activity is not instance of ReceiverActivity");
                         }
 
@@ -558,11 +561,33 @@ public class FileListFragment extends android.support.v4.app.Fragment {
 
             InputStream is = null;
             HttpURLConnection conn = null;
+
             try {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder().url(apiUrl)
+                        .build();
+                Response response = client.newCall(request).execute();
+
+                InputStream in = response.body().byteStream();
+
+                return readIt(in);
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "";
+            }
+
+
+        }
+
+
+
+            /*try {
                 URL url = new URL(apiUrl);
                 conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(10000 /* milliseconds */);
-                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setReadTimeout(10000 *//* milliseconds *//*);
+                conn.setConnectTimeout(15000 *//* milliseconds *//*);
                 conn.setRequestMethod("GET");
                 conn.setDoInput(true);
                 // Starts the query
@@ -587,8 +612,9 @@ public class FileListFragment extends android.support.v4.app.Fragment {
                 if (is != null) {
                     is.close();
                 }
-            }
-        }
+            }*/
+
+
 
         private String readIt(InputStream stream) throws IOException {
             Writer writer = new StringWriter();

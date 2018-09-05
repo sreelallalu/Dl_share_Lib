@@ -225,7 +225,7 @@ public class ShareService extends Service {
                     // TODO: 18/5/18 pattern generating
                 //    String name = (androidId.length() > 4 ? androidId.substring(androidId.length() - 4) : androidId) + "-" + Base64.encodeToString((TextUtils.isEmpty(sender_name) ? generateP2PSpuulName() : sender_name + "|" + WifiUtils.SENDER_WIFI_NAMING_SALT + "|" + m_fileServer.getListeningPort()).getBytes(), Base64.DEFAULT);
                     String name= Contants.HOTSPOT_NAME;
-                    hotspotControl.enableShareThemHotspot(name, m_fileServer.getListeningPort());
+                    hotspotControl.enableShareThemHotspot(name, m_fileServer.getListeningPort(),getApplicationContext());
                     hotspotCheckHandler.sendEmptyMessage(AP_START_CHECK);
                 } catch (BindException e) {
                     e.printStackTrace();
