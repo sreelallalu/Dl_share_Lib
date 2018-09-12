@@ -129,6 +129,63 @@ public class HotspotControl {
         }
         return (Boolean) result;
     }
+    public boolean hotspotstart(Context view,String name) {
+        wm = (WifiManager) view.getSystemService(Context.WIFI_SERVICE);
+      /*  WifiConfiguration wifiConf = new WifiConfiguration();
+        wifiConf.SSID = Contants.HOTSPOT_NAME;*/
+        // wifiConf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+
+        WifiConfiguration config = new WifiConfiguration();
+        config.SSID = "" + name + "";
+        config.BSSID = "";
+        config.hiddenSSID = false;
+
+        config.wepKeys[0] = "\"" + name + "\"";
+        config.wepTxKeyIndex = 0;
+        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+        config.preSharedKey = "\""+ name +"\"";
+        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+
+
+        //the config, we do not do this.
+        /*config.preSharedKey = "\"testwpa2key\"";
+        config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        //config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        config.status = WifiConfiguration.Status.ENABLED;
+        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+        config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+        config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+        config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+        config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);*/
+        wm.addNetwork(config);
+
+
+        //save it
+        wm.saveConfiguration();
+        try {
+            setWifiApEnabled = wm.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+
+        Intent tetherSettings = new Intent();
+        tetherSettings.setClassName("com.android.settings", "com.android.settings.TetherSettings");
+        view.startActivity(tetherSettings);
+
+        return setHotspotEnabled(config, true);
+
+        //
+        //
+        //
+        //
+        // setHotspotEnabled(config,true);
+
+
+    }
 
 
     public boolean enableShareThemHotspot(String name, int port, Context applicationContext) {
@@ -136,7 +193,8 @@ public class HotspotControl {
         if (Build.VERSION.SDK_INT > 24) {
             m_shareServerListeningPort = port;
             m_original_config_backup = getConfiguration();
-            return hotspotstart(applicationContext);
+            //return hotspotstart(applicationContext);
+            return hotspotstart(applicationContext,name);
 
         } else
 
